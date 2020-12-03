@@ -1,1 +1,1 @@
-print "Test... 1... 2... 3... \n";
+print "Hello world\n";
