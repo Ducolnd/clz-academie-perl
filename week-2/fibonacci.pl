@@ -1,15 +1,18 @@
+# Heel onefficiente manier om de fibonacci reeks te berekenen
+# omdat je elke keer opnieuw het Nde getal moet berekenen.
+
 sub fibb {
-    $n = $_[0];
+    my ($n) = @_;
 
     if ($n < 2) {
         return $n;
     }
 
     else {
-        return fibb(3) + fibb(1);
+        return fibb($n - 1) + fibb($n - 2);
     }
 }
 
-$a = 2;
+$a = 20;
 
-print "Fifth fibbonacci number is ", fibb($a), "\n";
+print "Fibonacci nummer is ", fibb($a), "\n";
