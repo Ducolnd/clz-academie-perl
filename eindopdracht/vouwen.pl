@@ -22,7 +22,7 @@ sub deg2rad {
     return ($degrees / 180) * pi;
 }
 
-$iterations = 3;
+$iterations = 16;
 
 for ((1..$iterations)) {
     $new = $order;
@@ -31,9 +31,9 @@ for ((1..$iterations)) {
 }
 
 
-my @coords = ([0,0], [10,0]);
+my @coords = ([450,700]);
 $angle = 0;
-$segment_length = 10;
+$segment_length = 5;
 
 foreach $char (split //, $order) {
     $lastx = $coords[-1][0];
@@ -45,17 +45,33 @@ foreach $char (split //, $order) {
         $angle = ($angle - 90) % 360;
     }
 
-    $xmove = sprintf("%.8f", cos(deg2rad($angle))) * $segment_length;
-    $ymove = sprintf("%.8f", sin(deg2rad($angle))) * $segment_length;
+    $newx = $lastx + (sprintf("%.10f", cos(deg2rad($angle))) * $segment_length); # Sprintf rond de float's af naar 10 decimalen. Dit gaf eerst problemen omdat PI niet exact was.
+    $newy = $lasty + (sprintf("%.10f", sin(deg2rad($angle))) * $segment_length);
 
-    $newx = $lastx + (sprintf("%.8f", cos(deg2rad($angle))) * $segment_length);
-    $newy = $lasty + (sprintf("%.8f", sin(deg2rad($angle))) * $segment_length);
-
-    print "Angle: $angle X: $newx Y: $newy \n";
+    # print "Angle: $angle X: $newx Y: $newy \n";
 
     push @coords, [$newx, $newy];
 }
 
+$coord_string = "M 445,700 L ";
+
+for(my $m = 0; $m <= $#coords; $m++) {    
+   for(my $n = 0; $n <= 1 ; $n++) {   
+       $coord_string = $coord_string . $coords[$m][$n] . ",";
+    }   
+
+    chop($coord_string);
+    $coord_string = $coord_string . " ";
+}  
 
 
-$svg = "<?xml version='1.0' encoding='UTF-8' standalone='no'?><svg><g><pathstyle='fill:none;stroke:#000000;stroke-width:2px'd='M 0,0 L10, 010, 1020, 1020, 20'/></g></svg>";
+
+$svg = "<?xml version='1.0' encoding='UTF-8' standalone='no'?><svg height='2000' width='2000' style='background-color:green;'><g><path style='fill:none;stroke:#000000;stroke-width:1px' d='";
+
+$svg2 = "'/></g></svg>";
+
+$svg_full = $svg . $coord_string . $svg2;
+
+open(file, ">", "test.svg");
+print file $svg_full;
+close(file);
