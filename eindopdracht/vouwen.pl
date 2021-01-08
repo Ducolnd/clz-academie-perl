@@ -22,7 +22,7 @@ sub deg2rad {
     return ($degrees / 180) * pi;
 }
 
-$iterations = 16;
+$iterations = 15;
 
 for ((1..$iterations)) {
     $new = $order;
@@ -34,15 +34,16 @@ for ((1..$iterations)) {
 my @coords = ([450,700]);
 $angle = 0;
 $segment_length = 5;
+$angle_step = 91;
 
 foreach $char (split //, $order) {
     $lastx = $coords[-1][0];
     $lasty = $coords[-1][1];
 
     if ($char eq $l) {
-        $angle = ($angle + 90) % 360;
+        $angle = ($angle + $angle_step) % 360;
     } else {
-        $angle = ($angle - 90) % 360;
+        $angle = ($angle - $angle_step) % 360;
     }
 
     $newx = $lastx + (sprintf("%.10f", cos(deg2rad($angle))) * $segment_length); # Sprintf rond de float's af naar 10 decimalen. Dit gaf eerst problemen omdat PI niet exact was.
@@ -57,7 +58,7 @@ $coord_string = "M 445,700 L ";
 
 for(my $m = 0; $m <= $#coords; $m++) {    
    for(my $n = 0; $n <= 1 ; $n++) {   
-       $coord_string = $coord_string . $coords[$m][$n] . ",";
+       $coord_string = $coord_string . sprintf("%.0f", $coords[$m][$n]) . ",";
     }   
 
     chop($coord_string);
@@ -66,12 +67,12 @@ for(my $m = 0; $m <= $#coords; $m++) {
 
 
 
-$svg = "<?xml version='1.0' encoding='UTF-8' standalone='no'?><svg height='2000' width='2000' style='background-color:green;'><g><path style='fill:none;stroke:#000000;stroke-width:1px' d='";
+$svg = "<?xml version='1.0' encoding='UTF-8' standalone='no'?><svg height='2000' width='2000' style='background-color:green;'><g><path style='fill:none;stroke:#000000;stroke-width:2px' d='";
 
 $svg2 = "'/></g></svg>";
 
 $svg_full = $svg . $coord_string . $svg2;
 
-open(file, ">", "test.svg");
+open(file, ">", "dragoncurve.svg");
 print file $svg_full;
 close(file);
