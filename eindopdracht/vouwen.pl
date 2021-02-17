@@ -1,8 +1,6 @@
 use Math::Trig;
 use List::Util qw( min max );
 
-# use warnings;
-
 $l = "L";
 
 $order = $l;
@@ -31,15 +29,14 @@ sub createdragon {
 
     $iterations = $n;
 
+    # Construct LRLRLRLLR shi
     for ((0..$iterations)) {
         $new = $order;
 
         $order = $order . $l . reverse(replace($new));
     }
 
-    # print "$order \n";
-
-
+    # Middle
     $startx = 450;
     $starty = 700;
 
@@ -48,6 +45,7 @@ sub createdragon {
     $segment_length = 5;
     $angle_step = $a;
 
+    # Construct coords from LLRLRLRL baap
     foreach $char (split //, $order) {
         $lastx = $coords[-1][0];
         $lasty = $coords[-1][1];
@@ -66,6 +64,7 @@ sub createdragon {
         push @coords, [$newx, $newy];
     }
 
+    # Geen idee
     my @xes = map{ $_->[0]} @coords;
     my @yes = map{ $_->[1]} @coords;
 
@@ -82,14 +81,14 @@ sub createdragon {
     $sstartx = sprintf("%.0f", $startx - $segment_length - $xmin);
     $sstarty = sprintf("%.0f", $starty - $ymin);
 
-
+    # Prepare to write to file
     $coord_string = "M " . "$sstartx" . ", " . "$sstarty" . " L ";
 
     for(my $m = 0; $m <= $#coords; $m++) {  
         $coord_string = $coord_string . sprintf("%.0f", $xes[$m]) . "," . sprintf("%.0f", $yes[$m]) . " ";
     }  
 
-
+    # Write SVG to file
     $svg = "<?xml version='1.0' encoding='UTF-8' standalone='no'?><svg height='$ymax' width='$xmax'><g><path style='fill:none;stroke:#000000;stroke-width:2px' d='";
     $svg2 = "'/></g></svg>";
     $svg_full = $svg . $coord_string . $svg2;
@@ -103,7 +102,5 @@ sub createdragon {
     close(file);
 }
 
-createdragon(6,90.5,2);
-# createdragon(2, 90, 2);
-
-
+# Iterations, angle, line-width
+createdragon(17, 91, 2);
